@@ -117,6 +117,8 @@ const { auth } = window.firebaseServices || {};
 if (auth) {
   auth.onAuthStateChanged((user) => {
     currentUser = user;
+    // expose current user globally so other scripts can detect auth state
+    window.currentUser = user;
 
     if (user) {
       // User is logged in
@@ -133,7 +135,10 @@ if (auth) {
       authModal.style.display = "flex";
       userInfo.style.display = "none";
 
-      // Clear shopping list
+      // Clear global user reference and restore local list view
+      window.currentUser = null;
+
+      // Clear shopping list UI (will load from localStorage if available)
       if (window.clearShoppingListUI) {
         window.clearShoppingListUI();
       }

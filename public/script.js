@@ -6,10 +6,11 @@ const totalCount = document.getElementById("totalCount");
 const completedCount = document.getElementById("completedCount");
 
 // Items and Firebase reference
-let items = [];
+// Load items from localStorage by default so users keep their list when logged out
+let items = JSON.parse(localStorage.getItem("shoppingItems")) || [];
 let itemsCollectionRef = null;
 
-// Render initial items (fallback to localStorage)
+// Render initial items (will show localStorage items if not signed in)
 renderList();
 
 // Event listeners
@@ -92,7 +93,9 @@ function renderList() {
                 onchange="toggleComplete(${item.id})"
             >
             <span class="item-text">${escapeHtml(item.text)}</span>
-            <button class="delete-btn" onclick="deleteItem(${item.id})">Törlés</button>
+            <button class="delete-btn" onclick="deleteItem(${
+              item.id
+            })">Törlés</button>
         `;
 
     shoppingList.appendChild(li);
@@ -197,7 +200,8 @@ window.loadUserShoppingList = async function () {
 
 // Clear shopping list UI for logged out users
 window.clearShoppingListUI = function () {
-  items = [];
+  // When user logs out, restore (or keep) items from localStorage so they don't disappear
+  items = JSON.parse(localStorage.getItem("shoppingItems")) || [];
   renderList();
 };
 
