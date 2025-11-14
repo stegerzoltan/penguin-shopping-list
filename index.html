@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Penguin Shopping List 🐧</title>
+    <title>Pingvin Bevásárlólista 🐧</title>
     <link rel="stylesheet" href="styles.css">
     <!-- Firebase (compat build - provides namespaced API used in this app) -->
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
@@ -19,24 +19,24 @@
     <div id="authModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Welcome to Penguin Shopping! 🐧</h2>
+                <h2>Üdvözlünk a Pingvin Bevásárlásban! 🐧</h2>
             </div>
             <div class="modal-body">
                 <div id="signInForm" class="form-section">
-                    <h3>Sign In</h3>
+                    <h3>Bejelentkezés</h3>
                     <input type="email" id="signInEmail" placeholder="Email" class="auth-input">
-                    <input type="password" id="signInPassword" placeholder="Password" class="auth-input">
-                    <button id="signInBtn" class="auth-button">Sign In</button>
-                    <p class="toggle-form">Don't have an account? <a href="#" onclick="toggleAuthForm(event)">Create one</a></p>
+                    <input type="password" id="signInPassword" placeholder="Jelszó" class="auth-input">
+                    <button id="signInBtn" class="auth-button">Bejelentkezés</button>
+                    <p class="toggle-form">Nincs még fiókod? <a href="#" onclick="toggleAuthForm(event)">Hozz létre egyet</a></p>
                 </div>
 
                 <div id="signUpForm" class="form-section" style="display:none;">
-                    <h3>Create Account</h3>
+                    <h3>Fiók Létrehozása</h3>
                     <input type="email" id="signUpEmail" placeholder="Email" class="auth-input">
-                    <input type="password" id="signUpPassword" placeholder="Password" class="auth-input">
-                    <input type="password" id="signUpConfirm" placeholder="Confirm Password" class="auth-input">
-                    <button id="signUpBtn" class="auth-button">Create Account</button>
-                    <p class="toggle-form">Already have an account? <a href="#" onclick="toggleAuthForm(event)">Sign in</a></p>
+                    <input type="password" id="signUpPassword" placeholder="Jelszó" class="auth-input">
+                    <input type="password" id="signUpConfirm" placeholder="Jelszó megerősítése" class="auth-input">
+                    <button id="signUpBtn" class="auth-button">Fiók Létrehozása</button>
+                    <p class="toggle-form">Már van fiókod? <a href="#" onclick="toggleAuthForm(event)">Bejelentkezés</a></p>
                 </div>
 
                 <div id="authError" class="auth-error"></div>
@@ -53,8 +53,8 @@
                     <button id="logoutBtn">Logout</button>
                 </div>
             </div>
-            <h1>Penguin's Shopping List</h1>
-            <p class="tagline">Waddle through your shopping with style!</p>
+            <h1>Pingvin Bevásárlólista</h1>
+            <p class="tagline">Csinálj bevásárlást a pingvinekkel stílusosan!</p>
         </header>
 
         <main>
@@ -62,29 +62,29 @@
                 <input 
                     type="text" 
                     id="itemInput" 
-                    placeholder="Add your item here... 🛒"
+                    placeholder="Add a new item... 🛒"
                     autocomplete="off"
                 >
-                <button id="addBtn">Add Item</button>
+                <button id="addBtn">Hozzáadás</button>
             </div>
 
             <div class="list-container">
-                <h2>Your Items</h2>
+                <h2>Tételeid</h2>
                 <ul id="shoppingList" class="shopping-list">
                     <!-- Items will be added here dynamically -->
                 </ul>
             </div>
 
             <div class="stats">
-                <p>Total items: <span id="totalCount">0</span></p>
-                <p>Completed: <span id="completedCount">0</span></p>
+                <p>Összesen: <span id="totalCount">0</span></p>
+                <p>Befejezve: <span id="completedCount">0</span></p>
             </div>
 
-            <button id="clearBtn" class="clear-btn">Clear All</button>
+            <button id="clearBtn" class="clear-btn">Törlés</button>
         </main>
 
         <footer>
-            <p>Happy shopping from your friendly penguins! 🐧❄️</p>
+            <p>Boldog bevásárlást a pingvinektől! 🐧❄️</p>
         </footer>
     </div>
 

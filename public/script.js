@@ -92,9 +92,7 @@ function renderList() {
                 onchange="toggleComplete(${item.id})"
             >
             <span class="item-text">${escapeHtml(item.text)}</span>
-            <button class="delete-btn" onclick="deleteItem(${
-              item.id
-            })">Törlés</button>
+            <button class="delete-btn" onclick="deleteItem(${item.id})">Törlés</button>
         `;
 
     shoppingList.appendChild(li);
