@@ -70,6 +70,14 @@ function clearAll() {
 }
 
 function renderList() {
+  // Defensive: remove duplicate items (same id) before rendering so each appears once
+  const seen = new Map();
+  items = items.filter((it) => {
+    if (seen.has(it.id)) return false;
+    seen.set(it.id, true);
+    return true;
+  });
+
   shoppingList.innerHTML = "";
 
   if (items.length === 0) {
@@ -234,31 +242,31 @@ function escapeHtml(text) {
 function setSyncStatus(state, message) {
   if (!syncStatusEl) return;
 
-  syncStatusEl.className = 'sync-status';
+  syncStatusEl.className = "sync-status";
 
-  if (state === 'saving') {
-    syncStatusEl.textContent = 'Mentés...';
-    syncStatusEl.classList.add('saving');
-  } else if (state === 'synced') {
-    syncStatusEl.textContent = 'Szinkronban';
-    syncStatusEl.classList.add('synced');
-  } else if (state === 'offline') {
-    syncStatusEl.textContent = 'Offline';
-    syncStatusEl.classList.add('offline');
-  } else if (state === 'error') {
-    syncStatusEl.textContent = message || 'Hiba';
-    syncStatusEl.classList.add('error');
+  if (state === "saving") {
+    syncStatusEl.textContent = "Mentés...";
+    syncStatusEl.classList.add("saving");
+  } else if (state === "synced") {
+    syncStatusEl.textContent = "Szinkronban";
+    syncStatusEl.classList.add("synced");
+  } else if (state === "offline") {
+    syncStatusEl.textContent = "Offline";
+    syncStatusEl.classList.add("offline");
+  } else if (state === "error") {
+    syncStatusEl.textContent = message || "Hiba";
+    syncStatusEl.classList.add("error");
   } else {
     syncStatusEl.textContent = state;
   }
 }
 
 // Update status when network changes
-window.addEventListener('online', () => setSyncStatus('synced'));
-window.addEventListener('offline', () => setSyncStatus('offline'));
+window.addEventListener("online", () => setSyncStatus("synced"));
+window.addEventListener("offline", () => setSyncStatus("offline"));
 
 // Initialize status
 (function initSyncStatus() {
-  if (navigator.onLine) setSyncStatus('synced');
-  else setSyncStatus('offline');
+  if (navigator.onLine) setSyncStatus("synced");
+  else setSyncStatus("offline");
 })();
