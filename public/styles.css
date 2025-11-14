@@ -487,6 +487,36 @@ footer {
     font-size: 0.95em;
 }
 
+/* Sync status indicator */
+.sync-status {
+    background: rgba(255,255,255,0.12);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.85em;
+    border: 1px solid rgba(255,255,255,0.12);
+}
+.sync-status.saving {
+    background: rgba(255, 235, 59, 0.15);
+    color: #fdd835;
+    border-color: rgba(253,216,53,0.25);
+}
+.sync-status.synced {
+    background: rgba(76,175,80,0.12);
+    color: #66bb6a;
+    border-color: rgba(102,187,106,0.18);
+}
+.sync-status.offline {
+    background: rgba(244,67,54,0.12);
+    color: #ef5350;
+    border-color: rgba(244,67,54,0.18);
+}
+.sync-status.error {
+    background: rgba(244,67,54,0.12);
+    color: #ef5350;
+    border-color: rgba(244,67,54,0.18);
+}
+
 #userEmail {
     color: white;
     max-width: 200px;

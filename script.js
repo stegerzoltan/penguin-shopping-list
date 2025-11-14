@@ -4,6 +4,7 @@ const shoppingList = document.getElementById("shoppingList");
 const clearBtn = document.getElementById("clearBtn");
 const totalCount = document.getElementById("totalCount");
 const completedCount = document.getElementById("completedCount");
+const syncStatusEl = document.getElementById("syncStatus");
 
 // Items and Firebase reference
 // Load items from localStorage by default so users keep their list when logged out
@@ -12,6 +13,35 @@ let itemsCollectionRef = null;
 
 // Render initial items (will show localStorage items if not signed in)
 renderList();
+
+// Sync status helper
+function setSyncStatus(state, message) {
+  if (!syncStatusEl) return;
+  syncStatusEl.classList.remove("saving", "synced", "offline", "error");
+  switch (state) {
+    case "saving":
+      syncStatusEl.textContent = message || "Saving...";
+      syncStatusEl.classList.add("saving");
+      break;
+    case "synced":
+      syncStatusEl.textContent = message || "Synced";
+      syncStatusEl.classList.add("synced");
+      break;
+    case "offline":
+      syncStatusEl.textContent = message || "Offline";
+      syncStatusEl.classList.add("offline");
+      break;
+    case "error":
+      syncStatusEl.textContent = message || "Error";
+      syncStatusEl.classList.add("error");
+      break;
+    default:
+      syncStatusEl.textContent = message || "—";
+  }
+}
+
+window.addEventListener("online", () => setSyncStatus("synced"));
+window.addEventListener("offline", () => setSyncStatus("offline"));
 
 // Event listeners
 addBtn.addEventListener("click", addItem);
@@ -113,17 +143,22 @@ function updateStats() {
 }
 
 function saveItems() {
-  // Save to Firebase if user is logged in
-  if (window.currentUser && itemsCollectionRef) {
+  // Indicate saving
+  setSyncStatus("saving");
+
+  if (window.currentUser && window.firebaseServices) {
+    // Try to save to Firebase (async). saveToFirebase will update status on completion.
     saveToFirebase();
   } else {
-    // Fallback to localStorage
+    // Fallback to localStorage (synchronous)
     localStorage.setItem("shoppingItems", JSON.stringify(items));
+    setSyncStatus("synced");
   }
 }
 
 async function saveToFirebase() {
   try {
+    setSyncStatus("saving");
     const { db } = window.firebaseServices;
     const userListRef = db
       .collection("users")
@@ -149,10 +184,13 @@ async function saveToFirebase() {
         timestamp: new Date(),
       });
     }
+    // Successfully saved
+    setSyncStatus("synced");
   } catch (error) {
     console.error("Hiba a Firebase-be való mentéskor:", error);
     // Fallback to localStorage
     localStorage.setItem("shoppingItems", JSON.stringify(items));
+    setSyncStatus("error", "Save failed — saved locally");
   }
 }
 
@@ -177,6 +215,8 @@ window.loadUserShoppingList = async function () {
     });
 
     renderList();
+    // initial load complete
+    setSyncStatus("synced");
 
     // Set up real-time listener
     userListRef.orderBy("timestamp", "asc").onSnapshot((snapshot) => {
@@ -189,12 +229,14 @@ window.loadUserShoppingList = async function () {
         });
       });
       renderList();
+      setSyncStatus("synced");
     });
   } catch (error) {
     console.error("Hiba a Firebase-ből való betöltéskor:", error);
     // Load from localStorage as fallback
     items = JSON.parse(localStorage.getItem("shoppingItems")) || [];
     renderList();
+    setSyncStatus("error", "Load failed — showing local list");
   }
 };
 
@@ -215,3 +257,38 @@ function escapeHtml(text) {
   };
   return text.replace(/[&<>"']/g, (m) => map[m]);
 }
+
+// Sync status helper (updates the small UI indicator)
+function setSyncStatus(state, message) {
+  // In the root script (non-public) the element may or may not exist
+  const el = document.getElementById('syncStatus');
+  if (!el) return;
+
+  el.className = 'sync-status';
+
+  if (state === 'saving') {
+    el.textContent = 'Mentés...';
+    el.classList.add('saving');
+  } else if (state === 'synced') {
+    el.textContent = 'Szinkronban';
+    el.classList.add('synced');
+  } else if (state === 'offline') {
+    el.textContent = 'Offline';
+    el.classList.add('offline');
+  } else if (state === 'error') {
+    el.textContent = message || 'Hiba';
+    el.classList.add('error');
+  } else {
+    el.textContent = state;
+  }
+}
+
+// Update status when network changes
+window.addEventListener('online', () => setSyncStatus('synced'));
+window.addEventListener('offline', () => setSyncStatus('offline'));
+
+// Initialize status
+(function initSyncStatus() {
+  if (navigator.onLine) setSyncStatus('synced');
+  else setSyncStatus('offline');
+})();
